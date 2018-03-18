@@ -2,6 +2,8 @@
 import requests
 import ssl
 from lxml import etree
+import urllib2
+from bs4 import BeautifulSoup
 
 # http://lanbing510.info/2016/03/15/Lianjia-Spider.html
 # https://github.com/lanbing510/LianJiaSpider
@@ -11,38 +13,6 @@ ssl._create_default_https_context = ssl._create_unverified_context
 session = requests.Session()
 
 
-for id in range(0, 251, 25):
-    URL = 'https://movie.douban.com/top250/?start=' + str(id)
-    req = session.get(URL)
-    # 设置网页编码格式
-    req.encoding = 'utf8'
-    # 将request.content 转化为 Element
-    root = etree.HTML(req.content)
-    print('root...',root)
-    # 选取 ol/li/div[@class="item"] 不管它们在文档中的位置
-    items = root.xpath('//ol/li/div[@class="item"]')
-    print('items...',items)
-    for item in items:
-        # 注意可能只有中文名，没有英文名；可能没有quote简评
-        rank, name, alias, rating_num, quote, url = "", "", "", "", "", ""
-        try:
-            url = item.xpath('./div[@class="pic"]/a/@href')[0]
-            print('url...',url)
-            rank = item.xpath('./div[@class="pic"]/em/text()')[0]
-            title = item.xpath('./div[@class="info"]//a/span[@class="title"]/text()')
-            name = title[0].encode('gb2312', 'ignore').decode('gb2312')
-            alias = title[1].encode('gb2312', 'ignore').decode('gb2312') if len(title) == 2 else ""
-            rating_num = item.xpath('.//div[@class="bd"]//span[@class="rating_num"]/text()')[0]
-            quote_tag = item.xpath('.//div[@class="bd"]//span[@class="inq"]')
-            if len(quote_tag) is not 0:
-                quote = quote_tag[0].text.encode('gb2312', 'ignore').decode('gb2312').replace('\xa0', '')
-            # 输出 排名，评分，简介
-            print('排名',rank,'评分', rating_num,'简介',quote)
-            # 输出 中文名，英文名
-            print('中文名',name.encode('gb2312', 'ignore').decode('gb2312'),'英文名',
-                  alias.encode('gb2312', 'ignore').decode('gb2312').replace('/', ','))
-        except:
-            print('faild!')
             
 
 #  headers =  {
@@ -69,11 +39,61 @@ for id in range(0, 251, 25):
 #     'Upgrade-Insecure-Requests': '1',
 #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36'
 # }
-# req = session.get(url,headers=headers,allow_redirects=False)
-# req.encoding = 'utf8'
-# # print('requesr...',req)
-# # header  = req.headers['Location']
-# # print('header...',header)
+
+
+url_page = 'https://suzhou.anjuke.com/sale/wuzhong/?from=SearchBar'
+
+hds=[{'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'},\
+    {'User-Agent':'Mozilla/5.0 (Windows NT 6.2) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.12 Safari/535.11'},\
+    {'User-Agent':'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)'},\
+    {'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0'},\
+    {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/44.0.2403.89 Chrome/44.0.2403.89 Safari/537.36'},\
+    {'User-Agent':'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'},\
+    {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50'},\
+    {'User-Agent':'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0'},\
+    {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'},\
+    {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'},\
+    {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11'},\
+    {'User-Agent':'Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11'},\
+    {'User-Agent':'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11'}]
+
+
+req = urllib2.Request(url_page,headers=hds[0])
+source_code = urllib2.urlopen(req,timeout=10).read()
+# print('source...',source_code)
+# plain_text=unicode(source_code) 
+soup = BeautifulSoup(source_code)
+
+# list-item
+
+# print('soup......',soup)
+
+xiaoqu_list=soup.findAll('li',{'class':'list-item'})
+
+# print('xiaoqu_list...',xiaoqu_list)
+
+for xq in xiaoqu_list:
+    info_dict={}
+
+    aa = xq.find('div',{'class':'house-details'})
+
+    bb = aa.find('div',{'class':'house-title'})
+
+    cc = bb.find('a').text
+
+ 
+
+    # print('xq...',xq)
+    print('cc...',cc)
+    print(type(cc))
+
+    
+
+
+
+
+
+
 # root = etree.HTML(req.content)
 # print('root...',root)
 
