@@ -76,17 +76,22 @@ xiaoqu_list=soup.findAll('li',{'class':'list-item'})
 for xq in xiaoqu_list:
     info_dict={}
 
+    item_img = xq.find('img')['src']
+    info_dict['item_img'] = item_img
+
     aa = xq.find('div',{'class':'house-details'})
-
     bb = aa.find('div',{'class':'house-title'})
-
     cc = bb.find('a').text
+    dd = bb.find('a')['href']
+    info_dict['url'] = dd
+    info_dict['target_name'] = cc
 
- 
+    price_det  = xq.findAll('div',{'class':'price-det'})
 
-    # print('xq...',xq)
-    print('cc...',cc)
-    print(type(cc))
+    # price = price_det.find('strong').text
+
+    print('price_det...',price_det)
+    print('info_dict...',info_dict)
 
     
 
