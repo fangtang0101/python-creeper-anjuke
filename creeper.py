@@ -2,7 +2,8 @@
 import requests
 import ssl
 from lxml import etree
-import urllib2
+# import urllib2
+import urllib.request
 from bs4 import BeautifulSoup
 
 # http://lanbing510.info/2016/03/15/Lianjia-Spider.html
@@ -58,11 +59,11 @@ hds=[{'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) 
     {'User-Agent':'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11'}]
 
 
-req = urllib2.Request(url_page,headers=hds[0])
-source_code = urllib2.urlopen(req,timeout=10).read()
-# print('source...',source_code)
-# plain_text=unicode(source_code) 
+req = urllib.request.Request(url_page,headers=hds[0])
+source_code =  urllib.request.urlopen(req,timeout=10).read()
 soup = BeautifulSoup(source_code)
+
+### tip1:python3 use urllib.request instance of urllib2
 
 # list-item
 
