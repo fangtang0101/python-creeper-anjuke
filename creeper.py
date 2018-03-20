@@ -76,27 +76,37 @@ xiaoqu_list=soup.findAll('li',{'class':'list-item'})
 for xq in xiaoqu_list:
     info_dict={}
 
+     # 图片
     item_img = xq.find('img')['src']
     info_dict['item_img'] = item_img
+   
 
+    
+    # 标题
     aa = xq.find('div',{'class':'house-details'})
     bb = aa.find('div',{'class':'house-title'})
     cc = bb.find('a').text
-    dd = bb.find('a')['href']
-    info_dict['url'] = dd
-    info_dict['target_name'] = cc
+    url = bb.find('a')['href'] # tips
+    info_dict['title'] = cc
+    info_dict['url'] = url
 
-    price_det  = xq.findAll('div',{'class':'price-det'})
+    # 楼层 等信息
 
-    # price = price_det.find('strong').text
+    ff = aa.find('div',{'class':'details-item'})
+    gg = ff.findAll('span')
+    info_dict['type'] = gg[0].text
+    info_dict['size'] = gg[1].text
+    info_dict['creat_year'] = gg[3].text
 
-    print('price_det...',price_det)
+     # address comm-address
+
+    jj = xq.find('span',{'class':'comm-address'})
+    info_dict['address'] = jj.text
+
+
+
+
     print('info_dict...',info_dict)
-
-    
-
-
-
 
 
 
