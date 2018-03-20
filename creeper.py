@@ -71,7 +71,7 @@ soup = BeautifulSoup(source_code)
 
 xiaoqu_list=soup.findAll('li',{'class':'list-item'})
 
-# print('xiaoqu_list...',xiaoqu_list)
+list_info = []
 
 for xq in xiaoqu_list:
     info_dict={}
@@ -103,20 +103,37 @@ for xq in xiaoqu_list:
     jj = xq.find('span',{'class':'comm-address'})
     info_dict['address'] = jj.text
 
+    # price
+    pp = xq.find('div',{'class':'pro-price'})
+    price = pp.find('strong').text
+    price_mei = pp.find('span',{'class':'unit-price'}).text
 
+    info_dict['price'] = price
+    info_dict['price_mei'] = price_mei
 
+    list_info.append(info_dict)
 
     print('info_dict...',info_dict)
 
+# for item in list_info:
+#             for key in item:
+#                 print('key...',key)
+#                 print('item...',item[key])
 
 
-# root = etree.HTML(req.content)
-# print('root...',root)
+with open("test.txt","w") as f:
+        for item in list_info:
+            for key in item:
+                f.write(item[key])
+                f.write('\n')
 
-# # items = root.xpath('//ul/li[@class="list-item"]')
-# items = root.xpath('//text()')
+            
+            
 
-# print('items.....',items)
+
+
+
+
 
 
 
